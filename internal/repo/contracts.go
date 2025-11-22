@@ -21,3 +21,18 @@ type (
 		Translate(entity.Translation) (entity.Translation, error)
 	}
 )
+
+type (
+	// CommentRepo -.
+	CommentRepo interface {
+		Create(ctx context.Context, comment entity.Comment) (entity.Comment, error)
+		GetByID(ctx context.Context, id int64) (entity.Comment, error)
+		GetList(ctx context.Context, filter entity.CommentFilter) (entity.CommentList, error)
+		Update(ctx context.Context, comment entity.Comment) (entity.Comment, error)
+	}
+
+	// CommentWebAPI - placeholder for external services if needed.
+	CommentWebAPI interface {
+		// Methods for external comment services can be added here
+	}
+)

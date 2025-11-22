@@ -9,6 +9,7 @@ import (
 // V1 -.
 type V1 struct {
 	t usecase.Translation
+	c usecase.Comment //comments
 	l logger.Interface
 	v *validator.Validate
 }

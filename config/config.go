@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/caarlos0/env/v11"
+	"github.com/joho/godotenv"
 )
 
 type (
@@ -67,10 +68,15 @@ type (
 
 // NewConfig returns app config.
 func NewConfig() (*Config, error) {
+
+	godotenv.Load()
+
 	cfg := &Config{}
 	if err := env.Parse(cfg); err != nil {
 		return nil, fmt.Errorf("config error: %w", err)
 	}
+
+	fmt.Printf("DEBUG: PG_URL = %s\n", cfg.PG.URL)
 
 	return cfg, nil
 }

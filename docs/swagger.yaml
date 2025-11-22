@@ -1,5 +1,48 @@
 basePath: /v1
 definitions:
+  entity.Comment:
+    properties:
+      content:
+        example: This is a comment
+        type: string
+      created_at:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+      entity_id:
+        example: 123
+        type: integer
+      entity_type:
+        example: order
+        type: string
+      id:
+        example: 1
+        type: integer
+      updated_at:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+      user_id:
+        example: 456
+        type: integer
+      user_name:
+        example: John Doe
+        type: string
+    type: object
+  entity.CommentList:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/entity.Comment'
+        type: array
+      page:
+        example: 1
+        type: integer
+      page_size:
+        example: 10
+        type: integer
+      total:
+        example: 100
+        type: integer
+    type: object
   entity.Translation:
     properties:
       destination:
@@ -51,6 +94,167 @@ info:
   title: Go Clean Template API
   version: "1.0"
 paths:
+  /comments:
+    get:
+      consumes:
+      - application/json
+      description: Get paginated list of comments for entity
+      operationId: get-comments-list
+      parameters:
+      - description: Entity type
+        in: query
+        name: entity_type
+        required: true
+        type: string
+      - description: Entity ID
+        in: query
+        name: entity_id
+        required: true
+        type: integer
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - default: created_at
+        description: Sort field
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: Sort order
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.CommentList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Get comments list
+      tags:
+      - comments
+    post:
+      consumes:
+      - application/json
+      description: Create a new comment
+      operationId: create-comment
+      parameters:
+      - description: Comment data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Comment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Create comment
+      tags:
+      - comments
+  /comments/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get comment by ID
+      operationId: get-comment-by-id
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Get comment by ID
+      tags:
+      - comments
+    put:
+      consumes:
+      - application/json
+      description: Update comment content
+      operationId: update-comment
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Comment data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Comment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Update comment
+      tags:
+      - comments
   /translation/do-translate:
     post:
       consumes:
